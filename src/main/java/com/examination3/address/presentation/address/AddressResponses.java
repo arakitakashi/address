@@ -1,4 +1,4 @@
-package com.examination3.address.presentation;
+package com.examination3.address.presentation.address;
 
 import java.util.List;
 

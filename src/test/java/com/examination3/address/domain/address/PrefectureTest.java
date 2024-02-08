@@ -22,7 +22,7 @@ public class PrefectureTest {
         # VALUE                              | MESSAGE                                          | TEST_NAME
         '東京都東京都東京都東京都東京都東京都東京都' | Error: The Prefecture is Max 20 digits.          | 値が21文字
         ' '                                  | Error: The Prefecture must not be null or blank. | 値が空文字
-                                             |Error: The Prefecture must not be null or blank.  | 値がnull 
+                                             | Error: The Prefecture must not be null or blank. | 値がnull 
         """)
     void _20文字以内の文字列以外の値を渡した場合例外が発生する(String value, String message, String testName) {
         // assert

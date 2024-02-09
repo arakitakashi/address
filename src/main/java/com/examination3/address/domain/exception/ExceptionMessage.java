@@ -6,7 +6,9 @@ public enum ExceptionMessage {
     PREFECTURE_NOT_BLANK_MESSAGE("Error: The Prefecture must not be null or blank."),
     PREFECTURE_MAX_20_DIGITS_MESSAGE("Error: The Prefecture is Max 20 digits."),
     CITY_NOT_BLANK_MESSAGE("Error: The City must not be null or blank."),
-    CITY_MAX_20_DIGITS_MESSAGE("Error: The City is Max 20 digits.");
+    CITY_MAX_20_DIGITS_MESSAGE("Error: The City is Max 20 digits."),
+    STREET_ADDRESS_NOT_BLANK_MESSAGE("Error: The Street address must not be null or blank."),
+    STREET_ADDRESS_MAX_100_DIGITS_MESSAGE("Error: The Street address is Max 100 digits.");
 
     private final String message;
 

@@ -1,6 +1,5 @@
 package com.examination3.address.domain.address;
 
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -34,23 +33,11 @@ class StreetAddressTest {
     @Test
     void _101文字以上の文字列を渡すと例外が発生する() {
         // setup
-        String invalidValue = """
-            ああああああああああ
-            いいいいいいいいいい
-            うううううううううう
-            ええええええええええ
-            おおおおおおおおおお
-            ああああああああああ
-            いいいいいいいいいい
-            うううううううううう
-            ええええええええええ
-            おおおおおおおおおお
-            あ
-            """;
+        String invalidValue = "あ".repeat(101);
 
         // assert
         assertThatThrownBy(() -> new StreetAddress(invalidValue))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Error: The Prefecture is Max 100 digits.");
+            .hasMessage("Error: The Street address is Max 100 digits.");
     }
 }

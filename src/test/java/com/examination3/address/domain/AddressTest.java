@@ -6,7 +6,11 @@ import com.examination3.address.domain.address.Id;
 import com.examination3.address.domain.address.Prefecture;
 import com.examination3.address.domain.address.StreetAddress;
 import com.examination3.address.domain.address.ZipCode;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -37,5 +41,29 @@ class AddressTest {
         assertThat(actual.prefecture()).isEqualTo(expectedPrefecture);
         assertThat(actual.city()).isEqualTo(expectedCity);
         assertThat(actual.streetAddress()).isEqualTo(expectedStreetAddress);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidArguments")
+    void 引数がnullの場合に例外が発生する(Id id, ZipCode zipCode, Prefecture prefecture, City city, StreetAddress streetAddress, String expectedMessage) {
+        assertThatThrownBy(() -> new Address(id, zipCode, prefecture, city, streetAddress))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(expectedMessage);
+    }
+
+    private static Stream<Arguments> provideInvalidArguments() {
+        Id validId = new Id(1);
+        ZipCode validZipCode = new ZipCode("1000000");
+        Prefecture validPrefecture = new Prefecture("東京都");
+        City validCity = new City("千代田区");
+        StreetAddress validStreetAddress = new StreetAddress("以下に掲載がない場合");
+
+        return Stream.of(
+            Arguments.of(null, validZipCode, validPrefecture, validCity, validStreetAddress, "Id must not be null"),
+            Arguments.of(validId, null, validPrefecture, validCity, validStreetAddress, "Zip code must not be null"),
+            Arguments.of(validId, validZipCode, null, validCity, validStreetAddress, "Prefecture must not be null"),
+            Arguments.of(validId, validZipCode, validPrefecture, null, validStreetAddress, "City must not be null"),
+            Arguments.of(validId, validZipCode, validPrefecture, validCity, null, "Street address must not be null")
+        );
     }
 }

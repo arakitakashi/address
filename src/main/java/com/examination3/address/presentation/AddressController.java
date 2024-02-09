@@ -2,6 +2,8 @@ package com.examination3.address.presentation;
 
 import com.examination3.address.presentation.address.AddressResponse;
 import com.examination3.address.presentation.address.AddressResponses;
+import com.examination3.address.usecase.AddressDto;
+import com.examination3.address.usecase.AddressGetAllUsecase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class AddressController {
+    private final AddressGetAllUsecase addressGetAllUsecase;
+
     /**
      * 全ての住所情報を取得します。
      *
@@ -20,11 +24,14 @@ public class AddressController {
     @GetMapping("/v1/addresses")
     @ResponseStatus(HttpStatus.OK)
     public AddressResponses getAddresses() {
-        List<AddressResponse> addressResponses = List.of(
-            new AddressResponse("1", "1000000", "東京都", "千代田区", "以下に掲載がない場合"),
-            new AddressResponse("2", "1020072", "東京都", "千代田区", "飯田橋"),
-            new AddressResponse("3", "1500043", "東京都", "渋谷区", "道玄坂")
-        );
+        List<AddressResponse> addressResponses = addressGetAllUsecase.execute().stream()
+            .map(this::convertDtoToResponse).toList();
+
         return new AddressResponses(addressResponses);
+    }
+
+    private AddressResponse convertDtoToResponse(AddressDto dto) {
+        return new AddressResponse(String.valueOf(dto.id()), dto.zipCode(), dto.prefecture(),
+            dto.city(), dto.streetAddress());
     }
 }

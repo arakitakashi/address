@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class IdTest {
+class IdTest {
     @Test
     void 正の値の数値を渡すと正常にインスタンスが生成される() {
         // execute

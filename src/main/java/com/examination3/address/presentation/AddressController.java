@@ -38,9 +38,8 @@ public class AddressController {
     @GetMapping("v1/addresses/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AddressResponse> getAddressById(@PathVariable String id) {
-        Optional<AddressDto> addressDto = addressGetByIdUsecase.execute(id);
-        return addressDto.map(a -> ResponseEntity.ok(convertDtoToResponse(a)))
-            .orElseGet(() -> ResponseEntity.notFound().build());
+        AddressDto addressDto = addressGetByIdUsecase.execute(id);
+        return ResponseEntity.ok(convertDtoToResponse(addressDto));
     }
 
     private AddressResponse convertDtoToResponse(AddressDto dto) {

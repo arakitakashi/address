@@ -1,6 +1,7 @@
 package com.examination3.address.domain.exception;
 
 public enum ExceptionMessage {
+    ADDRESS_NOT_FOUND_MESSAGE("specified address [id = %s] is not found."),
     ZIP_CODE_NOT_BLANK_MESSAGE("Error: Zip code must not be null or blank."),
     ZIP_CODE_7_DIGITS_MESSAGE("Error: Zip code must be numerical and 7 digits long."),
     PREFECTURE_NOT_BLANK_MESSAGE("Error: Prefecture must not be null or blank."),
@@ -23,5 +24,9 @@ public enum ExceptionMessage {
 
     public String getMessage() {
         return message;
+    }
+
+    public String format(Object... args) {
+        return String.format(message, args);
     }
 }

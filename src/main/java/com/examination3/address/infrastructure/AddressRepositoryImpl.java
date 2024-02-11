@@ -9,11 +9,14 @@ import com.examination3.address.domain.address.Id;
 import com.examination3.address.domain.address.Prefecture;
 import com.examination3.address.domain.address.StreetAddress;
 import com.examination3.address.domain.address.ZipCode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -40,7 +43,21 @@ public class AddressRepositoryImpl implements AddressRepository {
 
     @Override
     public Optional<Address> findById(String id) {
-        return null;
+        String query = "SELECT id, zip_code, prefecture, city, street_address FROM addresses WHERE id = :id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", Integer.parseInt(id));
+
+        try {
+            AddressRecord addressRecord = jdbcTemplate.queryForObject(query, params, new DataClassRowMapper<>(AddressRecord.class));
+            return Optional.ofNullable(mapToAddress(addressRecord));
+
+        } catch(EmptyResultDataAccessException e) {
+           return Optional.empty();
+        } catch (DataAccessException e) {
+            log.warn("Data access error.", e);
+            throw e;
+        }
     }
 
     private Address mapToAddress(AddressRecord addressRecord) {

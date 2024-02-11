@@ -1,7 +1,5 @@
 package com.examination3.address.infrastructure;
 
-import static java.util.Collections.emptyList;
-
 import com.examination3.address.domain.address.Address;
 import com.examination3.address.domain.address.AddressRepository;
 import com.examination3.address.domain.address.City;
@@ -33,11 +31,12 @@ public class AddressRepositoryImpl implements AddressRepository {
         String query = "SELECT id, zip_code, prefecture, city, street_address FROM addresses";
 
         try {
-            List<AddressRecord> addressRecord = jdbcTemplate.query(query, new DataClassRowMapper<>(AddressRecord.class));
+            List<AddressRecord> addressRecord = jdbcTemplate.query(query,
+                new DataClassRowMapper<>(AddressRecord.class));
             return addressRecord.stream().map(this::mapToAddress).toList();
         } catch (DataAccessException e) {
             log.warn(DATABASE_ACCESS_ERROR_MESSAGE, e);
-            return emptyList();
+            throw e;
         }
     }
 
@@ -49,11 +48,12 @@ public class AddressRepositoryImpl implements AddressRepository {
         params.put("id", Integer.parseInt(id));
 
         try {
-            AddressRecord addressRecord = jdbcTemplate.queryForObject(query, params, new DataClassRowMapper<>(AddressRecord.class));
+            AddressRecord addressRecord = jdbcTemplate.queryForObject(query, params,
+                new DataClassRowMapper<>(AddressRecord.class));
             return Optional.ofNullable(mapToAddress(addressRecord));
 
-        } catch(EmptyResultDataAccessException e) {
-           return Optional.empty();
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         } catch (DataAccessException e) {
             log.warn("Data access error.", e);
             throw e;

@@ -10,6 +10,7 @@ import com.examination3.address.domain.address.Prefecture;
 import com.examination3.address.domain.address.StreetAddress;
 import com.examination3.address.domain.address.ZipCode;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -35,6 +36,11 @@ public class AddressRepositoryImpl implements AddressRepository {
             log.warn(DATABASE_ACCESS_ERROR_MESSAGE, e);
             return emptyList();
         }
+    }
+
+    @Override
+    public Optional<Address> findById(String id) {
+        return null;
     }
 
     private Address mapToAddress(AddressRecord addressRecord) {

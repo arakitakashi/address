@@ -7,4 +7,6 @@ public interface AddressRepository {
     List<Address> findAll();
 
     Optional<Address> findById(String id);
+
+    int nextAddressId();
 }

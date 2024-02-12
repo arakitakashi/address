@@ -60,6 +60,13 @@ public class AddressRepositoryImpl implements AddressRepository {
         }
     }
 
+    public int nextAddressId() {
+        String sql = "SELECT NEXTVAL('ADDRESS_ID_SEQ')";
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class))
+            .orElseThrow(() -> new IllegalStateException("Failed to fetch next address ID from sequence."));
+    }
+
     private Address mapToAddress(AddressRecord addressRecord) {
         return new Address(
             new Id(addressRecord.id()),

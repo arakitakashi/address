@@ -19,12 +19,12 @@ class ZipCodeTest {
 
     @ParameterizedTest(name = "{2}の場合")
     @CsvSource(delimiter = '|', textBlock = """
-        # VALUE     | MESSAGE                                                  | TESTNAME
-          123456    | Error: Zip code must be numerical and 7 digits long. | zip_codeが6桁
-          12345678  | Error: Zip code must be numerical and 7 digits long. | zip_codeが8桁
-          ABCDEFG   | Error: Zip code must be numerical and 7 digits long. | zip_codeが数値以外
-                    | Error: Zip code must not be null or blank.           | zip_codeがnull
-          '       ' | Error: Zip code must not be null or blank.           | zip_codeが空文字 
+        # VALUE     | MESSAGE                                       | TESTNAME
+          123456    | zip code must be numerical and 7 digits long. | zip_codeが6桁
+          12345678  | zip code must be numerical and 7 digits long. | zip_codeが8桁
+          ABCDEFG   | zip code must be numerical and 7 digits long. | zip_codeが数値以外
+                    | zip code must not be blank.                   | zip_codeがnull
+          '       ' | zip code must not be blank.                   | zip_codeが空文字 
          """)
     void _7桁の数値の文字列以外の値が渡された場合例外が発生する(String value, String message,
         String testName) {

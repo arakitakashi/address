@@ -19,9 +19,9 @@ class StreetAddressTest {
 
     @ParameterizedTest(name = "{2}の場合")
     @CsvSource(delimiter = '|', textBlock = """
-        # VALUE | MESSAGE | TEST_NAME
-        ' ' | Error: Street address must not be null or blank. | 値が空文字
-            | Error: Street address must not be null or blank. | 値がnull
+        # VALUE | MESSAGE                           | TEST_NAME
+        ' '     | street address must not be blank. | 値が空文字
+                | street address must not be blank. | 値がnull
         """)
     void 空文字もしくはnullを渡すと例外が発生する(String value, String message, String testName) {
         // assert
@@ -38,6 +38,6 @@ class StreetAddressTest {
         // assert
         assertThatThrownBy(() -> new StreetAddress(invalidValue))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Error: Street address is Max 100 digits.");
+            .hasMessage("street address is Max 100 digits.");
     }
 }

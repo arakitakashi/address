@@ -13,6 +13,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import io.restassured.RestAssured;
 import java.sql.DriverManager;
+import org.checkerframework.checker.units.qual.A;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -136,8 +137,15 @@ public class AddressControllerTest {
 
         @ParameterizedTest(name = "{5}の場合")
         @CsvSource(delimiter = '|', textBlock = """
-            # ZIP_CODE | PREFECTURE | CITY | STREET_ADDRESS | MESSAGE | TEST_NAME
-              ''  | 東京都 | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | id must not be blank | zip codeがblank
+            # ZIP_CODE  | PREFECTURE | CITY  | STREET_ADDRESS                | MESSAGE                           | TEST_NAME
+              ''        | 東京都      | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | zip code must not be blank.       | zip codeがblank
+                        | 東京都      | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | zip code must not be blank.       | zip codeがnull
+              '1506001' | ''         | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | prefecture must not be blank.     | prefectureがblank
+              '1506001' |            | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | prefecture must not be blank.     | prefectureがnull
+              '1506001' | 東京都      | ''    | 恵比寿恵比寿ガーデンプレイス（１階） | city must not be blank.           | cityがblank
+              '1506001' | 東京都      |       | 恵比寿恵比寿ガーデンプレイス（１階） | city must not be blank.           | cityがnull
+              '1506001' | 東京都      | 渋谷区 | ''                             | street address must not be blank. | street addressがblank
+              '1506001' | 東京都      | 渋谷区 |                                | street address must not be blank. | street addressがnull
             """)
         void 指定した住所情報が不正の場合エラーを返す(
             String zipCode, String prefecture, String city, String streetAddress,
@@ -153,6 +161,26 @@ public class AddressControllerTest {
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("details[0]", is(message));
+        }
+    }
+
+    @Nested
+    class 更新 {
+        @Test
+        void 指定したIDの住所情報を更新する() throws Exception {
+            AddressRequest addressRequest = new AddressRequest(
+                "1000000",
+                "東京都",
+                "千代田区",
+                "高輪ゲートウェイ"
+            );
+            given()
+                .contentType("application/json")
+                .body(addressRequest)
+                .when()
+                .patch("/v1/addresses/1")
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
         }
     }
 }

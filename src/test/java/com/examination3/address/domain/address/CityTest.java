@@ -19,10 +19,10 @@ class CityTest {
 
     @ParameterizedTest(name = "{2}の場合")
     @CsvSource(delimiter = '|', textBlock = """
-        # VALUE                              | MESSAGE                                    | TEST_NAME 
-        '千代田区千代田区千代田区千代田区千代田千代' | Error: City is Max 20 digits.          | 値が21文字
-        ' '                                  | Error: City must not be null or blank. | 値が空文字
-                                             | Error: City must not be null or blank. | 値がnull 
+        # VALUE                              | MESSAGE                 | TEST_NAME 
+        '千代田区千代田区千代田区千代田区千代田千代' | city is Max 20 digits.  | 値が21文字
+        ' '                                  | city must not be blank. | 値が空文字
+                                             | city must not be blank. | 値がnull 
          """)
     void _20文字以内の文字列以外の値を渡すと例外が発生する(String value, String message, String testName) {
         // assert

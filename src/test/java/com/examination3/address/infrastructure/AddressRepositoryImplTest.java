@@ -17,7 +17,6 @@ import com.github.database.rider.junit5.api.DBRider;
 import java.sql.DriverManager;
 import java.util.List;
 import java.util.Optional;
-import oracle.jdbc.proxy.annotation.Pre;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
@@ -101,21 +100,6 @@ class AddressRepositoryImplTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-//    @Test
-//    @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
-//    @ExpectedDataSet(value = "datasets/address/addresses-expected.yml")
-//    void 次の番号のIDを返す() {
-//        // setup
-//        int expected = 4;
-//
-//        // execute
-//        System.out.println(sut.findAll());
-//        int actual = sut.nextAddressId();
-//
-//        // assert
-//        assertThat(actual).isEqualTo(expected);
-//    }
-
     @Nested
     class 新規登録 {
         @Test
@@ -147,5 +131,4 @@ class AddressRepositoryImplTest {
             assertThat(actual).isEqualTo(expected);
         }
     }
-
 }

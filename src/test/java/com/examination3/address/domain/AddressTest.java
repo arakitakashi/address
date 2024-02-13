@@ -59,11 +59,11 @@ class AddressTest {
         StreetAddress validStreetAddress = new StreetAddress("以下に掲載がない場合");
 
         return Stream.of(
-            Arguments.of(null, validZipCode, validPrefecture, validCity, validStreetAddress, "Id must not be null"),
-            Arguments.of(validId, null, validPrefecture, validCity, validStreetAddress, "Zip code must not be null"),
-            Arguments.of(validId, validZipCode, null, validCity, validStreetAddress, "Prefecture must not be null"),
-            Arguments.of(validId, validZipCode, validPrefecture, null, validStreetAddress, "City must not be null"),
-            Arguments.of(validId, validZipCode, validPrefecture, validCity, null, "Street address must not be null")
+            Arguments.of(null, validZipCode, validPrefecture, validCity, validStreetAddress, "Error: Id must not be null"),
+            Arguments.of(validId, null, validPrefecture, validCity, validStreetAddress, "Error: Zip code must not be null"),
+            Arguments.of(validId, validZipCode, null, validCity, validStreetAddress, "Error: Prefecture must not be null"),
+            Arguments.of(validId, validZipCode, validPrefecture, null, validStreetAddress, "Error: City must not be null"),
+            Arguments.of(validId, validZipCode, validPrefecture, validCity, null, "Error: Street address must not be null")
         );
     }
 }

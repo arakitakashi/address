@@ -1,34 +1,75 @@
 package com.examination3.address.presentation;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
+import com.examination3.address.domain.address.AddressRepository;
+import com.examination3.address.presentation.address.AddressRequest;
+import com.github.database.rider.core.api.configuration.DBUnit;
+import com.github.database.rider.core.api.connection.ConnectionHolder;
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.api.DBRider;
 import io.restassured.RestAssured;
+import java.sql.DriverManager;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Transactional
-@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
+@DBRider
+@DBUnit(cacheConnection = false)
 public class AddressControllerTest {
+    private static final String DB_URL = "jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false";
+    private static final String DB_USER = "utuser";
+    private static final String DB_PASSWORD = "utpassword";
+
+    private static final ConnectionHolder connectionHolder =
+        () -> DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+    @Autowired
+    AddressRepository addressRepository;
     @LocalServerPort
     private int port;
+
+    @BeforeAll
+    static void setUpAll() {
+        Flyway.configure().dataSource(DB_URL, DB_USER, DB_PASSWORD).load().migrate();
+    }
 
     @BeforeEach
     public void setup() {
         RestAssured.port = port;
     }
 
+    @BeforeEach
+    void setUp() {
+        jdbcTemplate.execute("ALTER SEQUENCE ADDRESS_ID_SEQ RESTART WITH 4");
+    }
+
+    @AfterEach
+    void tearDown() {
+        jdbcTemplate.execute("ALTER SEQUENCE ADDRESS_ID_SEQ RESTART WITH 1");
+    }
+
     @Nested
     class 参照 {
         @Test
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+        @ExpectedDataSet(value = "datasets/address/addresses-expected.yml")
         void 全ての書籍情報を取得する() throws Exception {
             // assert
             given()
@@ -54,6 +95,64 @@ public class AddressControllerTest {
                 .body("addresses[2].prefecture", is("東京都"))
                 .body("addresses[2].city", is("渋谷区"))
                 .body("addresses[2].street_address", is("道玄坂"));
+        }
+
+        @Test
+        void 指定したIDの住所情報を取得する() {
+            // setup
+            String addressId = "1";
+
+            // assert
+            given()
+                .when()
+                .get("/v1/addresses/{id}", addressId)
+                .then()
+                .statusCode(200)
+                .assertThat()
+                .body("id", is(addressId))
+                .body("zip_code", is("1000000"))
+                .body("prefecture", is("東京都"))
+                .body("city", is("千代田区"))
+                .body("street_address", is("以下に掲載がない場合"));
+        }
+    }
+
+    @Nested
+    class 新規登録 {
+        @Test
+        void 指定した住所情報を登録する() throws Exception {
+            AddressRequest addressRequest =
+                new AddressRequest("1506001", "東京都", "渋谷区", "恵比寿恵比寿ガーデンプレイス（１階）");
+
+            given()
+                .contentType("application/json")
+                .body(addressRequest)
+                .when()
+                .post("/v1/addresses")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", containsString("/v1/addresses/4"));
+        }
+
+        @ParameterizedTest(name = "{5}の場合")
+        @CsvSource(delimiter = '|', textBlock = """
+            # ZIP_CODE | PREFECTURE | CITY | STREET_ADDRESS | MESSAGE | TEST_NAME
+              ''  | 東京都 | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | id must not be blank | zip codeがblank
+            """)
+        void 指定した住所情報が不正の場合エラーを返す(
+            String zipCode, String prefecture, String city, String streetAddress,
+            String message, String testName
+        ) throws Exception {
+            AddressRequest addressRequest = new AddressRequest(zipCode, prefecture, city,
+                streetAddress);
+            given()
+                .contentType("application/json")
+                .body(addressRequest)
+                .when()
+                .post("/v1/addresses")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("details[0]", is(message));
         }
     }
 }

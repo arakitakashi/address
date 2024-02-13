@@ -1,12 +1,10 @@
 package com.examination3.address.usecase;
 
-import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.examination3.address.domain.address.Address;
 import com.examination3.address.domain.address.AddressRepository;
 import com.examination3.address.domain.address.City;
-import com.examination3.address.domain.address.Id;
 import com.examination3.address.domain.address.Prefecture;
 import com.examination3.address.domain.address.StreetAddress;
 import com.examination3.address.domain.address.ZipCode;
@@ -24,6 +22,7 @@ public class AddressUpdateUsecase {
         Address existingAddress = addressRepository.findById(id)
             .orElseThrow(() -> new AddressNotFoundException(id));
         Address address = requestToAddress(existingAddress, addressRequest);
+        addressRepository.update(address);
     }
 
     private Address requestToAddress(Address existingAddress, AddressRequest addressRequest) {

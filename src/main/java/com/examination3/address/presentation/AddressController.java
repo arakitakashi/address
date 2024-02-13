@@ -7,6 +7,7 @@ import com.examination3.address.usecase.AddressDto;
 import com.examination3.address.usecase.AddressGetAllUsecase;
 import com.examination3.address.usecase.AddressGetByIdUsecase;
 import com.examination3.address.usecase.AddressRegisterUsecase;
+import com.examination3.address.usecase.AddressUpdateUsecase;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class AddressController {
     private final AddressGetAllUsecase addressGetAllUsecase;
     private final AddressGetByIdUsecase addressGetByIdUsecase;
     private final AddressRegisterUsecase addressRegisterUsecase;
+    private final AddressUpdateUsecase addressUpdateUsecase;
 
     /**
      * 全ての住所情報を取得します。
@@ -73,6 +75,7 @@ public class AddressController {
         @PathVariable String id,
         @RequestBody AddressRequest addressRequest
     ) {
+        addressUpdateUsecase.execute(id, addressRequest);
         return ResponseEntity.noContent().build();
     }
 }

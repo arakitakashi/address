@@ -2,6 +2,8 @@ package com.examination3.address.presentation;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import com.examination3.address.domain.address.AddressRepository;
@@ -13,7 +15,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import io.restassured.RestAssured;
 import java.sql.DriverManager;
-import org.checkerframework.checker.units.qual.A;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -99,6 +100,8 @@ public class AddressControllerTest {
         }
 
         @Test
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+        @ExpectedDataSet(value = "datasets/address/addresses-expected.yml")
         void 指定したIDの住所情報を取得する() {
             // setup
             String addressId = "1";
@@ -116,71 +119,94 @@ public class AddressControllerTest {
                 .body("city", is("千代田区"))
                 .body("street_address", is("以下に掲載がない場合"));
         }
-    }
 
-    @Nested
-    class 新規登録 {
         @Test
-        void 指定した住所情報を登録する() throws Exception {
-            AddressRequest addressRequest =
-                new AddressRequest("1506001", "東京都", "渋谷区", "恵比寿恵比寿ガーデンプレイス（１階）");
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+        @ExpectedDataSet(value = "datasets/address/addresses-expected.yml")
+        void 指定したIDの住所情報を存在しない場合例外が発生する() {
+            // setup
+            String invalidId = "99";
 
+            // assert
             given()
-                .contentType("application/json")
-                .body(addressRequest)
                 .when()
-                .post("/v1/addresses")
+                .get("/v1/addresses/{id}", invalidId)
                 .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .header("Location", containsString("/v1/addresses/4"));
+                .statusCode(400)
+                .assertThat()
+                .body("code", equalTo("0003"))
+                .body("message", equalTo("specified address [id = 99] is not found."))
+                .body("details", empty());
         }
 
-        @ParameterizedTest(name = "{5}の場合")
-        @CsvSource(delimiter = '|', textBlock = """
-            # ZIP_CODE  | PREFECTURE | CITY  | STREET_ADDRESS                | MESSAGE                           | TEST_NAME
-              ''        | 東京都      | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | zip code must not be blank.       | zip codeがblank
-                        | 東京都      | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | zip code must not be blank.       | zip codeがnull
-              '1506001' | ''         | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | prefecture must not be blank.     | prefectureがblank
-              '1506001' |            | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | prefecture must not be blank.     | prefectureがnull
-              '1506001' | 東京都      | ''    | 恵比寿恵比寿ガーデンプレイス（１階） | city must not be blank.           | cityがblank
-              '1506001' | 東京都      |       | 恵比寿恵比寿ガーデンプレイス（１階） | city must not be blank.           | cityがnull
-              '1506001' | 東京都      | 渋谷区 | ''                             | street address must not be blank. | street addressがblank
-              '1506001' | 東京都      | 渋谷区 |                                | street address must not be blank. | street addressがnull
-            """)
-        void 指定した住所情報が不正の場合エラーを返す(
-            String zipCode, String prefecture, String city, String streetAddress,
-            String message, String testName
-        ) throws Exception {
-            AddressRequest addressRequest = new AddressRequest(zipCode, prefecture, city,
-                streetAddress);
-            given()
-                .contentType("application/json")
-                .body(addressRequest)
-                .when()
-                .post("/v1/addresses")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("details[0]", is(message));
-        }
-    }
+        @Nested
+        class 新規登録 {
+            @Test
+            @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+            void 指定した住所情報を登録する() throws Exception {
+                AddressRequest addressRequest =
+                    new AddressRequest("1506001", "東京都", "渋谷区", "恵比寿恵比寿ガーデンプレイス（１階）");
 
-    @Nested
-    class 更新 {
-        @Test
-        void 指定したIDの住所情報を更新する() throws Exception {
-            AddressRequest addressRequest = new AddressRequest(
-                "1000000",
-                "東京都",
-                "千代田区",
-                "高輪ゲートウェイ"
-            );
-            given()
-                .contentType("application/json")
-                .body(addressRequest)
-                .when()
-                .patch("/v1/addresses/1")
-                .then()
-                .statusCode(HttpStatus.NO_CONTENT.value());
+                given()
+                    .contentType("application/json")
+                    .body(addressRequest)
+                    .when()
+                    .post("/v1/addresses")
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value())
+                    .header("Location", containsString("/v1/addresses/4"));
+            }
+
+            @ParameterizedTest(name = "{5}の場合")
+            @CsvSource(delimiter = '|', textBlock = """
+                # ZIP_CODE  | PREFECTURE | CITY  | STREET_ADDRESS                | MESSAGE                           | TEST_NAME
+                  ''        | 東京都      | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | zip code must not be blank.       | zip codeがblank
+                            | 東京都      | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | zip code must not be blank.       | zip codeがnull
+                  '1506001' | ''         | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | prefecture must not be blank.     | prefectureがblank
+                  '1506001' |            | 渋谷区 | 恵比寿恵比寿ガーデンプレイス（１階） | prefecture must not be blank.     | prefectureがnull
+                  '1506001' | 東京都      | ''    | 恵比寿恵比寿ガーデンプレイス（１階） | city must not be blank.           | cityがblank
+                  '1506001' | 東京都      |       | 恵比寿恵比寿ガーデンプレイス（１階） | city must not be blank.           | cityがnull
+                  '1506001' | 東京都      | 渋谷区 | ''                             | street address must not be blank. | street addressがblank
+                  '1506001' | 東京都      | 渋谷区 |                                | street address must not be blank. | street addressがnull
+                """)
+            @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+            @ExpectedDataSet(value = "datasets/address/addresses-expected.yml")
+            void 指定した住所情報が不正の場合エラーを返す(
+                String zipCode, String prefecture, String city, String streetAddress,
+                String message, String testName
+            ) throws Exception {
+                AddressRequest addressRequest = new AddressRequest(zipCode, prefecture, city,
+                    streetAddress);
+                given()
+                    .contentType("application/json")
+                    .body(addressRequest)
+                    .when()
+                    .post("/v1/addresses")
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body("details[0]", is(message));
+            }
+        }
+
+        @Nested
+        class 更新 {
+            @Test
+            @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+            void 指定したIDの住所情報を更新する() throws Exception {
+                AddressRequest addressRequest = new AddressRequest(
+                    "1000000",
+                    "東京都",
+                    "千代田区",
+                    "高輪ゲートウェイ"
+                );
+                given()
+                    .contentType("application/json")
+                    .body(addressRequest)
+                    .when()
+                    .patch("/v1/addresses/1")
+                    .then()
+                    .statusCode(HttpStatus.NO_CONTENT.value());
+            }
         }
     }
 }

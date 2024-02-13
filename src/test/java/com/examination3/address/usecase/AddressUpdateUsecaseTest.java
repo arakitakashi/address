@@ -14,7 +14,6 @@ import com.examination3.address.domain.exception.AddressNotFoundException;
 import com.examination3.address.presentation.address.AddressRequest;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +28,6 @@ public class AddressUpdateUsecaseTest {
     AddressRepository addressRepository;
 
     @Test
-    @Disabled
     void 指定したIDの住所情報を更新する() {
         // setup
         Optional<Address> expected = Optional.of(

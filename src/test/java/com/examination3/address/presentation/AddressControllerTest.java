@@ -209,4 +209,16 @@ public class AddressControllerTest {
             }
         }
     }
+
+    @Nested
+    class 削除 {
+        @Test
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+        void 指定したIDの住所情報を削除する() {
+            given()
+                .delete("/v1/addresses/{id}", "1")
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+        }
+    }
 }

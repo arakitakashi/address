@@ -105,22 +105,10 @@ class AddressRepositoryImplTest {
         @Test
         void 指定した住所情報を新規登録する() {
             // setup
-            Address newAddress = new Address(
-                new Id(4),
-                new ZipCode("1506001"),
-                new Prefecture("東京都"),
-                new City("渋谷区"),
-                new StreetAddress("恵比寿恵比寿ガーデンプレイス（１階）")
-            );
+            Address newAddress = createAddressForRegister();
 
             Optional<Address> expected =
-                Optional.of(new Address(
-                        new Id(4),
-                        new ZipCode("1506001"),
-                        new Prefecture("東京都"),
-                        new City("渋谷区"),
-                        new StreetAddress("恵比寿恵比寿ガーデンプレイス（１階）")
-                    )
+                Optional.of(createAddressForRegister()
                 );
 
             // execute
@@ -129,6 +117,47 @@ class AddressRepositoryImplTest {
             // assert
             Optional<Address> actual = sut.findById("4");
             assertThat(actual).isEqualTo(expected);
+        }
+
+        private Address createAddressForRegister() {
+            return new Address(
+                new Id(4),
+                new ZipCode("1506001"),
+                new Prefecture("東京都"),
+                new City("渋谷区"),
+                new StreetAddress("恵比寿恵比寿ガーデンプレイス（１階）")
+            );
+        }
+    }
+
+    @Nested
+    class 更新 {
+        @Test
+        void 指定した住所情報を更新する() {
+            // setup
+            Optional<Address> expected =
+                Optional.of(
+                    createAddressForUpdate()
+                );
+
+            Address address = createAddressForUpdate();
+
+            // execute
+            sut.update(address);
+
+            // assert
+            Optional<Address> actual = sut.findById("1");
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        private Address createAddressForUpdate() {
+            return new Address(
+                new Id(1),
+                new ZipCode("1000000"),
+                new Prefecture("東京都"),
+                new City("千代田区"),
+                new StreetAddress("高輪ゲートウェイ")
+            );
         }
     }
 }

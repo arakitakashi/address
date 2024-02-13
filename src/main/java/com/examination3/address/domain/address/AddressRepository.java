@@ -10,5 +10,7 @@ public interface AddressRepository {
 
     Address register(Address address);
 
+    Optional<Address> update(Address address);
+
     int nextAddressId();
 }

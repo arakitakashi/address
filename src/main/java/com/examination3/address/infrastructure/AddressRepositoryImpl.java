@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -18,6 +19,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -89,6 +91,37 @@ public class AddressRepositoryImpl implements AddressRepository {
 
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class))
             .orElseThrow(() -> new IllegalStateException("Failed to fetch next address ID from sequence."));
+    }
+
+    @Override
+    @Transactional
+    public Optional<Address> update(Address address) {
+        String query = """
+            UPDATE addresses
+            SET zip_code = :zip_code, prefecture = :prefecture, city = :city, street_address = :street_address
+            WHERE id = :id
+            """;
+
+        Map<String, Object> params = createUpdateParams(address);
+
+        try {
+            jdbcTemplate.update(query, params);
+            //TODO updateの結果でエラーハンドリングするか検討
+            return Optional.of(address);
+        } catch (DataAccessException e) {
+            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            throw e;
+        }
+    }
+
+    private Map<String, Object> createUpdateParams(Address address) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", address.id().value());
+        result.put("zip_code", address.zipCode().value());
+        result.put("prefecture", address.prefecture().value());
+        result.put("city", address.city().value());
+        result.put("street_address", address.streetAddress().value());
+        return result;
     }
 
     private Address mapToAddress(AddressRecord addressRecord) {

@@ -6,9 +6,9 @@ import com.examination3.address.presentation.address.AddressResponses;
 import com.examination3.address.usecase.AddressDto;
 import com.examination3.address.usecase.AddressGetAllUsecase;
 import com.examination3.address.usecase.AddressGetByIdUsecase;
+import com.examination3.address.usecase.AddressRegisterUsecase;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class AddressController {
     private final AddressGetAllUsecase addressGetAllUsecase;
     private final AddressGetByIdUsecase addressGetByIdUsecase;
+    private final AddressRegisterUsecase addressRegisterUsecase;
 
     /**
      * 全ての住所情報を取得します。
@@ -55,13 +56,13 @@ public class AddressController {
     @PostMapping("/v1/addresses")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createAddress(@RequestBody AddressRequest addressRequest) {
-        long addressId = 4;
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(addressId)
-            .toUri();
-
+        AddressDto registeredAddress = addressRegisterUsecase.execute(addressRequest);
+        URI location = getLocation(registeredAddress);
         return ResponseEntity.created(location).build();
+    }
+
+    private URI getLocation(AddressDto addressDto) {
+        return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
+            .buildAndExpand(addressDto.id()).toUri();
     }
 }

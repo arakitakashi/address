@@ -8,5 +8,7 @@ public interface AddressRepository {
 
     Optional<Address> findById(String id);
 
+    Address register(Address address);
+
     int nextAddressId();
 }

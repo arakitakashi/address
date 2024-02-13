@@ -35,7 +35,7 @@ public class AddressRepositoryImpl implements AddressRepository {
                 new DataClassRowMapper<>(AddressRecord.class));
             return addressRecord.stream().map(this::mapToAddress).toList();
         } catch (DataAccessException e) {
-            log.warn(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
             throw e;
         }
     }
@@ -55,9 +55,33 @@ public class AddressRepositoryImpl implements AddressRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         } catch (DataAccessException e) {
-            log.warn("Data access error.", e);
+            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
             throw e;
         }
+    }
+
+    public Address register(Address address) {
+        String query = "INSERT INTO addresses (id, zip_code, prefecture, city, street_address) VALUES (:id, :zip_code, :prefecture, :city, :street_address)";
+
+        Map<String, Object> params = createRegisterParams(address);
+
+        try {
+            jdbcTemplate.update(query, params);
+            return address;
+        } catch (DataAccessException e) {
+            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            throw e;
+        }
+    }
+
+    private Map<String, Object> createRegisterParams(Address address) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", address.id().value());
+        result.put("zip_code", address.zipCode().value());
+        result.put("prefecture", address.prefecture().value());
+        result.put("city", address.city().value());
+        result.put("street_address", address.streetAddress().value());
+        return result;
     }
 
     public int nextAddressId() {

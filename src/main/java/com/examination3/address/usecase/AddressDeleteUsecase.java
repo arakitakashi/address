@@ -8,6 +8,5 @@ import org.springframework.stereotype.Service;
 public class AddressDeleteUsecase {
     public boolean execute(String id) {
         return true;
-
     }
 }

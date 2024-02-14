@@ -3,6 +3,7 @@ package com.examination3.address.presentation;
 import com.examination3.address.presentation.address.AddressRequest;
 import com.examination3.address.presentation.address.AddressResponse;
 import com.examination3.address.presentation.address.AddressResponses;
+import com.examination3.address.usecase.AddressDeleteUsecase;
 import com.examination3.address.usecase.AddressDto;
 import com.examination3.address.usecase.AddressGetAllUsecase;
 import com.examination3.address.usecase.AddressGetByIdUsecase;
@@ -31,6 +32,7 @@ public class AddressController {
     private final AddressGetByIdUsecase addressGetByIdUsecase;
     private final AddressRegisterUsecase addressRegisterUsecase;
     private final AddressUpdateUsecase addressUpdateUsecase;
+    private final AddressDeleteUsecase addressDeleteUsecase;
 
     /**
      * 全ての住所情報を取得します。
@@ -84,6 +86,7 @@ public class AddressController {
     @DeleteMapping("/v1/addresses/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteAddresses(@PathVariable String id) {
+        addressDeleteUsecase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }

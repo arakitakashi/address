@@ -1,5 +1,7 @@
 package com.examination3.address.infrastructure;
 
+import static java.util.Objects.isNull;
+
 import com.examination3.address.domain.address.Address;
 import com.examination3.address.domain.address.AddressRepository;
 import com.examination3.address.domain.address.City;
@@ -62,6 +64,7 @@ public class AddressRepositoryImpl implements AddressRepository {
     }
 
     private Address mapToAddress(AddressRecord addressRecord) {
+        if (isNull(addressRecord)) return null;
         return new Address(
             new Id(addressRecord.id()),
             new ZipCode(addressRecord.zip_code()),

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -60,6 +59,16 @@ public class AddressRepositoryImpl implements AddressRepository {
             log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
             throw e;
         }
+    }
+
+    private Address mapToAddress(AddressRecord addressRecord) {
+        return new Address(
+            new Id(addressRecord.id()),
+            new ZipCode(addressRecord.zip_code()),
+            new Prefecture(addressRecord.prefecture()),
+            new City(addressRecord.city()),
+            new StreetAddress(addressRecord.street_address())
+        );
     }
 
     public Address register(Address address) {
@@ -124,13 +133,26 @@ public class AddressRepositoryImpl implements AddressRepository {
         return result;
     }
 
-    private Address mapToAddress(AddressRecord addressRecord) {
-        return new Address(
-            new Id(addressRecord.id()),
-            new ZipCode(addressRecord.zip_code()),
-            new Prefecture(addressRecord.prefecture()),
-            new City(addressRecord.city()),
-            new StreetAddress(addressRecord.street_address())
-        );
+    @Override
+    @Transactional
+    public boolean delete(String id) {
+        try {
+            String query = "DELETE FROM addresses WHERE id = :id";
+
+            Map<String, Object> params = createDeleteParams(id);
+
+            int affectedRows = jdbcTemplate.update(query, params);
+
+            return affectedRows > 0;
+        } catch (DataAccessException e) {
+            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            throw e;
+        }
+    }
+
+    private Map<String, Object> createDeleteParams(String id) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", Integer.parseInt(id));
+        return result;
     }
 }

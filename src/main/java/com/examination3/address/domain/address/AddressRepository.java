@@ -12,5 +12,7 @@ public interface AddressRepository {
 
     Optional<Address> update(Address address);
 
+    boolean delete(String id);
+
     int nextAddressId();
 }

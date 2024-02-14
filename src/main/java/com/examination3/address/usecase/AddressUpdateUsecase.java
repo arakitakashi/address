@@ -22,7 +22,9 @@ public class AddressUpdateUsecase {
         Address existingAddress = addressRepository.findById(id)
             .orElseThrow(() -> new AddressNotFoundException(id));
         Address address = requestToAddress(existingAddress, addressRequest);
-        addressRepository.update(address);
+        addressRepository.update(address).orElseThrow(() ->
+            new AddressNotFoundException(String.valueOf(address.id().value()))
+        );
     }
 
     private Address requestToAddress(Address existingAddress, AddressRequest addressRequest) {

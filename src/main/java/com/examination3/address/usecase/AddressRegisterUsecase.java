@@ -18,8 +18,6 @@ public class AddressRegisterUsecase {
 
     public AddressDto execute(AddressRequest addressRequest) {
         int id = addressRepository.nextAddressId();
-        System.out.println(id);
-
         Address registeredAddress = addressRepository.register(
             new Address(
                 new Id(id),

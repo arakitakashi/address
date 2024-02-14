@@ -22,6 +22,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * {@link AddressRepository}のJDBCによる実装。 住所情報のデータベース操作を担います。
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Repository
@@ -29,6 +32,9 @@ public class AddressRepositoryImpl implements AddressRepository {
     private static final String DATABASE_ACCESS_ERROR_MESSAGE = "Database Access Error";
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Address> findAll() {
         String query = "SELECT id, zip_code, prefecture, city, street_address FROM addresses";
@@ -43,9 +49,13 @@ public class AddressRepositoryImpl implements AddressRepository {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Address> findById(String id) {
-        String query = "SELECT id, zip_code, prefecture, city, street_address FROM addresses WHERE id = :id";
+        String query =
+            "SELECT id, zip_code, prefecture, city, street_address FROM addresses WHERE id = :id";
 
         Map<String, Object> params = new HashMap<>();
         params.put("id", Integer.parseInt(id));
@@ -64,7 +74,9 @@ public class AddressRepositoryImpl implements AddressRepository {
     }
 
     private Address mapToAddress(AddressRecord addressRecord) {
-        if (isNull(addressRecord)) return null;
+        if (isNull(addressRecord)) {
+            return null;
+        }
         return new Address(
             new Id(addressRecord.id()),
             new ZipCode(addressRecord.zip_code()),
@@ -74,8 +86,14 @@ public class AddressRepositoryImpl implements AddressRepository {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Address register(Address address) {
-        String query = "INSERT INTO addresses (id, zip_code, prefecture, city, street_address) VALUES (:id, :zip_code, :prefecture, :city, :street_address)";
+        String query = """
+            INSERT INTO addresses (id, zip_code, prefecture, city, street_address) 
+            VALUES (:id, :zip_code, :prefecture, :city, :street_address)
+            """;
 
         Map<String, Object> params = createRegisterParams(address);
 
@@ -98,27 +116,41 @@ public class AddressRepositoryImpl implements AddressRepository {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int nextAddressId() {
         String sql = "SELECT NEXTVAL('ADDRESS_ID_SEQ')";
 
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class))
-            .orElseThrow(() -> new IllegalStateException("Failed to fetch next address ID from sequence."));
+            .orElseThrow(
+                () -> new IllegalStateException("Failed to fetch next address ID from sequence."));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Optional<Address> update(Address address) {
         String query = """
             UPDATE addresses
-            SET zip_code = :zip_code, prefecture = :prefecture, city = :city, street_address = :street_address
+            SET 
+            zip_code = :zip_code, 
+            prefecture = :prefecture, 
+            city = :city, 
+            street_address = :street_address
             WHERE id = :id
             """;
 
         Map<String, Object> params = createUpdateParams(address);
 
         try {
-            jdbcTemplate.update(query, params);
-            //TODO updateの結果でエラーハンドリングするか検討
+            int affectedRows = jdbcTemplate.update(query, params);
+            if (affectedRows == 0) {
+                log.warn(String.format("No Address found with ID: %d", address.id().value()));
+                return Optional.empty();
+            }
             return Optional.of(address);
         } catch (DataAccessException e) {
             log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
@@ -136,6 +168,9 @@ public class AddressRepositoryImpl implements AddressRepository {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public boolean delete(String id) {

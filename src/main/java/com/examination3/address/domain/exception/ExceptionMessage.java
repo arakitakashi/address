@@ -1,5 +1,8 @@
 package com.examination3.address.domain.exception;
 
+/**
+ * 例外メッセージの管理クラス。
+ */
 public enum ExceptionMessage {
     ADDRESS_NOT_FOUND_MESSAGE("specified address [id = %s] is not found."),
     ZIP_CODE_NOT_BLANK_MESSAGE("zip code must not be blank."),
@@ -22,10 +25,21 @@ public enum ExceptionMessage {
         this.message = message;
     }
 
+    /**
+     * 例外のメッセージを返します。
+     *
+     * @return 例外メッセージの文字列。
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * 引数をもとにフォーマットされたメッセージを返します。
+     *
+     * @param args フォーマットのための引数。
+     * @return フォーマットされたメッセージ文字列。
+     */
     public String format(Object... args) {
         return String.format(message, args);
     }

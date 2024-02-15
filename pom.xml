@@ -12,13 +12,20 @@
 	<artifactId>address</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>address</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Examination3</description>
 
 	<properties>
 		<java.version>17</java.version>
+		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
 		<rest-assured.version>5.3.2</rest-assured.version>
 		<rider-junit5.version>1.41.0</rider-junit5.version>
 		<flywaydb.version>10.7.1</flywaydb.version>
+		<jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+
+		<sonar.exclusions>
+			src/main/java/com/examination3/address/AddressApplication.java
+		</sonar.exclusions>
 	</properties>
 
 	<dependencies>
@@ -110,6 +117,39 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<configuration>
+					<formats>XML</formats>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

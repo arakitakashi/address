@@ -1,7 +1,12 @@
 package com.examination3.address.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 import com.examination3.address.domain.address.Address;
 import com.examination3.address.domain.address.AddressRepository;
 import com.examination3.address.domain.address.City;
@@ -21,6 +26,11 @@ import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -31,10 +41,12 @@ class AddressRepositoryImplTest {
     private static final String DB_URL = "jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false";
     private static final String DB_USER = "utuser";
     private static final String DB_PASSWORD = "utpassword";
-
     private static final ConnectionHolder connectionHolder =
         () -> DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-
+    @Mock
+    Appender<ILoggingEvent> appender;
+    @Captor
+    ArgumentCaptor<LoggingEvent> captor;
     @Autowired
     AddressRepository sut;
 
@@ -103,6 +115,7 @@ class AddressRepositoryImplTest {
     @Nested
     class 新規登録 {
         @Test
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
         void 指定した住所情報を新規登録する() {
             // setup
             Address newAddress = createAddressForRegister();
@@ -133,14 +146,15 @@ class AddressRepositoryImplTest {
     @Nested
     class 更新 {
         @Test
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
         void 指定した住所情報を更新する() {
             // setup
             Optional<Address> expected =
                 Optional.of(
-                    createAddressForUpdate()
+                    createAddressForUpdate(1)
                 );
 
-            Address address = createAddressForUpdate();
+            Address address = createAddressForUpdate(1);
 
             // execute
             sut.update(address);
@@ -150,14 +164,68 @@ class AddressRepositoryImplTest {
             assertThat(actual).isEqualTo(expected);
         }
 
-        private Address createAddressForUpdate() {
+        @Test
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+        void 指定した住所情報のIDが存在しない場合WARNレベルのログを出力し空のOptionalを返す() {
+            // setup
+            MockitoAnnotations.openMocks(this);
+            Logger logger = (Logger) LoggerFactory.getLogger(AddressRepositoryImpl.class);
+            logger.addAppender(appender);
+            Address invalidIdAddress = createAddressForUpdate(99);
+
+            Optional<Address> expected = Optional.empty();
+
+            // execute
+            Optional<Address> actual = sut.update(invalidIdAddress);
+
+            // assert
+            assertLogMessage("WARN", "No Address found with ID: 99");
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        private void assertLogMessage(String logLevel, String message) {
+            verify(appender).doAppend(captor.capture());
+            assertThat(captor.getValue().getLevel()).hasToString(logLevel);
+            assertThat(captor.getValue().getMessage()).contains(message);
+        }
+
+        private Address createAddressForUpdate(int idValue) {
             return new Address(
-                new Id(1),
+                new Id(idValue),
                 new ZipCode("1000000"),
                 new Prefecture("東京都"),
                 new City("千代田区"),
                 new StreetAddress("高輪ゲートウェイ")
             );
+        }
+    }
+
+    @Nested
+    class 削除 {
+        @Test
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+        void 指定したIDの住所情報の削除に成功するとtrueを返す() {
+            // setup
+            String addressId = "2";
+
+            // execute
+            boolean actual = sut.delete(addressId);
+
+            // assert
+            assertThat(actual).isTrue();
+        }
+
+        @Test
+        @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
+        void 指定したIDが存在しない場合falseを返す() {
+            // setup
+            String invalidId = "99";
+
+            // execute
+            boolean actual = sut.delete(invalidId);
+
+            // assert
+            assertThat(actual).isFalse();
         }
     }
 }

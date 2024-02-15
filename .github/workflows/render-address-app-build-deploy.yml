@@ -1,4 +1,4 @@
-name: Address app build and deploy
+name: Address app build and deploy to Render
 
 on:
   workflow_dispatch:

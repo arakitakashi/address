@@ -95,7 +95,7 @@ public class AddressRepositoryImpl implements AddressRepository {
             VALUES (:id, :zip_code, :prefecture, :city, :street_address)
             """;
 
-        Map<String, Object> params = createRegisterParams(address);
+        Map<String, Object> params = createParams(address);
 
         try {
             jdbcTemplate.update(query, params);
@@ -104,16 +104,6 @@ public class AddressRepositoryImpl implements AddressRepository {
             log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
             throw e;
         }
-    }
-
-    private Map<String, Object> createRegisterParams(Address address) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("id", address.id().value());
-        result.put("zip_code", address.zipCode().value());
-        result.put("prefecture", address.prefecture().value());
-        result.put("city", address.city().value());
-        result.put("street_address", address.streetAddress().value());
-        return result;
     }
 
     /**
@@ -143,7 +133,7 @@ public class AddressRepositoryImpl implements AddressRepository {
             WHERE id = :id
             """;
 
-        Map<String, Object> params = createUpdateParams(address);
+        Map<String, Object> params = createParams(address);
 
         try {
             int affectedRows = jdbcTemplate.update(query, params);
@@ -158,7 +148,7 @@ public class AddressRepositoryImpl implements AddressRepository {
         }
     }
 
-    private Map<String, Object> createUpdateParams(Address address) {
+    private Map<String, Object> createParams(Address address) {
         Map<String, Object> result = new HashMap<>();
         result.put("id", address.id().value());
         result.put("zip_code", address.zipCode().value());
@@ -167,7 +157,6 @@ public class AddressRepositoryImpl implements AddressRepository {
         result.put("street_address", address.streetAddress().value());
         return result;
     }
-
     /**
      * {@inheritDoc}
      */

@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @RequiredArgsConstructor
-public class AddressUpdateUsecaseTest {
+class AddressUpdateUsecaseTest {
     @Autowired
     AddressUpdateUsecase sut;
 

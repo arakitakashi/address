@@ -6,13 +6,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
- * City値オブジェクトを表すクラス。
+ * city値オブジェクトを表すクラス。
  */
 public record City(String value) {
     /**
      * コンストラクタ。値のバリデーションを行います。
      *
-     * @param value 　Cityの値。20文字以下の文字列。
+     * @param value 　cityの値。20文字以下の文字列。
      */
     public City {
         if (isBlank(value)) {

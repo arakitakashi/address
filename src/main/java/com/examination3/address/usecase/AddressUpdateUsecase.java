@@ -13,11 +13,19 @@ import com.examination3.address.presentation.address.AddressRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * 指定されたIDの住所情報の更新を行うユースケースクラス。 リポジトリを利用して、操作を行います。
+ */
 @Service
 @RequiredArgsConstructor
 public class AddressUpdateUsecase {
     private final AddressRepository addressRepository;
 
+    /**
+     * 既存の住所情報を更新します。
+     *
+     * @param addressRequest 更新する住所情報のリクエスト。
+     */
     public void execute(String id, AddressRequest addressRequest) {
         Address existingAddress = addressRepository.findById(id)
             .orElseThrow(() -> new AddressNotFoundException(id));
@@ -28,24 +36,28 @@ public class AddressUpdateUsecase {
     }
 
     private Address requestToAddress(Address existingAddress, AddressRequest addressRequest) {
-       ZipCode updateZipCode =
-       !isBlank(addressRequest.zip_code()) ? new ZipCode(addressRequest.zip_code()) : existingAddress.zipCode();
+        ZipCode updateZipCode =
+            !isBlank(addressRequest.zip_code()) ? new ZipCode(addressRequest.zip_code())
+                : existingAddress.zipCode();
 
-       Prefecture updatePrefecture =
-           !isBlank(addressRequest.prefecture()) ? new Prefecture(addressRequest.prefecture()) : existingAddress.prefecture();
+        Prefecture updatePrefecture =
+            !isBlank(addressRequest.prefecture()) ? new Prefecture(addressRequest.prefecture())
+                : existingAddress.prefecture();
 
-       City updateCity =
-           !isBlank(addressRequest.city()) ? new City(addressRequest.city()) : existingAddress.city();
+        City updateCity =
+            !isBlank(addressRequest.city()) ? new City(addressRequest.city())
+                : existingAddress.city();
 
-       StreetAddress updateStreetAddress =
-           !isBlank(addressRequest.street_address()) ? new StreetAddress(addressRequest.street_address()) : existingAddress.streetAddress();
+        StreetAddress updateStreetAddress =
+            !isBlank(addressRequest.street_address()) ? new StreetAddress(
+                addressRequest.street_address()) : existingAddress.streetAddress();
 
-       return new Address(
-           existingAddress.id(),
-           updateZipCode,
-           updatePrefecture,
-           updateCity,
-           updateStreetAddress
-       );
+        return new Address(
+            existingAddress.id(),
+            updateZipCode,
+            updatePrefecture,
+            updateCity,
+            updateStreetAddress
+        );
     }
 }

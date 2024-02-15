@@ -5,13 +5,13 @@ import static com.examination3.address.domain.exception.ExceptionMessage.ZIP_COD
 import static org.apache.commons.lang3.StringUtils.*;
 
 /**
- * Zipcode値オブジェクトを表すクラス。
+ * zip code値オブジェクトを表すクラス。
  */
 public record ZipCode(String value) {
     /**
      * コンストラクタ。バリデーションを行います。
      *
-     * @param value Zip codeの値。7桁の数値。
+     * @param value zip codeの値。7桁の数値。
      */
     public ZipCode {
         if (isBlank(value)) throw new IllegalArgumentException(ZIP_CODE_NOT_BLANK_MESSAGE.getMessage());

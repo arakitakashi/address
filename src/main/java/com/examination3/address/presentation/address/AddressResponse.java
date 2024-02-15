@@ -3,7 +3,7 @@ package com.examination3.address.presentation.address;
 /**
  * 出力のための住所情報のレスポンスボティをマッピングするクラス。
  *
- * @param id             idの値。
+ * @param id             IDの値。
  * @param zip_code       zip codeの値。
  * @param prefecture     prefectureの値。
  * @param city           cityの値。

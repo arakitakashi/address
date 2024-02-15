@@ -5,13 +5,13 @@ import static com.examination3.address.domain.exception.ExceptionMessage.PREFECT
 import static org.apache.commons.lang3.StringUtils.*;
 
 /**
- * Prefecture値オブジェクトを表すクラス。
+ * prefecture値オブジェクトを表すクラス。
  */
 public record Prefecture(String value) {
     /**
      * コンストラクタ。値のバリデーションを行います。
      *
-     * @param value Prefectureの値。20文字以内の文字列。
+     * @param value prefectureの値。20文字以内の文字列。
      */
     public Prefecture {
        if (isBlank(value)) throw new IllegalArgumentException(PREFECTURE_NOT_BLANK_MESSAGE.getMessage());

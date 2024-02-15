@@ -10,7 +10,7 @@ import static java.util.Objects.isNull;
 import com.examination3.address.usecase.AddressDto;
 
 /**
- * 住所エンティティを表すクラス。　住所の基本情報であるID、ZIP CODE、Prefecture、City、Street Addressを保持します。
+ * 住所エンティティを表すクラス。　住所の基本情報であるID、zip code、prefecture、city、street addressを保持します。
  */
 public record Address(
     Id id,

@@ -5,13 +5,13 @@ import static com.examination3.address.domain.exception.ExceptionMessage.STREET_
 import static org.apache.commons.lang3.StringUtils.*;
 
 /**
- * StreetAddress値オブジェクトを表すクラス。
+ * street address値オブジェクトを表すクラス。
  */
 public record StreetAddress(String value) {
     /**
      * コンストラクタ。値のバリデーションを行います。
      *
-     * @param value Street addressの値。100文字以内の文字列。
+     * @param value street addressの値。100文字以内の文字列。
      */
     public StreetAddress {
        if (isBlank(value)) throw new IllegalArgumentException(STREET_ADDRESS_NOT_BLANK_MESSAGE.getMessage());

@@ -117,8 +117,8 @@ public class AddressController {
     /**
      * 指定されたIDの住所情報を削除します。 削除に成功すると204 No Contentを返します。
      *
-     * @param id ID
-     * @return レスポンスエンティティ
+     * @param id IDの値。
+     * @return レスポンスエンティティ。
      */
     @DeleteMapping("/v1/addresses/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

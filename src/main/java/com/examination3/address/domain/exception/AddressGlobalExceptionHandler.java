@@ -40,7 +40,7 @@ public class AddressGlobalExceptionHandler {
      * 入力値が不正の場合の例外（{@link IllegalArgumentException}）を処理します。 バリデーションエラーの詳細をクライアントに返します。
      *
      * @param e 発生した{@link IllegalArgumentException}
-     * @return バリデーションエラー情報を含むレスポンスエンティティ
+     * @return バリデーションエラー情報を含むレスポンスエンティティ。
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(

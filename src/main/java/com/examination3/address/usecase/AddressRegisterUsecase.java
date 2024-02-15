@@ -11,11 +11,20 @@ import com.examination3.address.presentation.address.AddressRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * 指定された住所情報の新規登録を行うユースケースクラス。 リポジトリを利用して、操作を行います。
+ */
 @Service
 @RequiredArgsConstructor
 public class AddressRegisterUsecase {
     private final AddressRepository addressRepository;
 
+    /**
+     * 新しい住所情報を登録します。 登録された住所情報を返します。
+     *
+     * @param addressRequest 登録する住所情報のリクエスト。
+     * @return 登録された住所情報のDto。
+     */
     public AddressDto execute(AddressRequest addressRequest) {
         int id = addressRepository.nextAddressId();
         Address registeredAddress = addressRepository.register(

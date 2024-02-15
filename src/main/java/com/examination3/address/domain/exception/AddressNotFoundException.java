@@ -9,7 +9,7 @@ public class AddressNotFoundException extends RuntimeException {
     /**
      * 指定されたメッセージを持つ{@link AddressNotFoundException}を構築します。
      *
-     * @param id 例外に関連するId。
+     * @param id 例外に関連するID。
      */
     public AddressNotFoundException(String id) {
         super(ADDRESS_NOT_FOUND_MESSAGE.format(id));

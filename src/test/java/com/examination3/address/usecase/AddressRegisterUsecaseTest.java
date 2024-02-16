@@ -1,5 +1,7 @@
 package com.examination3.address.usecase;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.examination3.address.domain.address.AddressRepository;
 import com.examination3.address.presentation.address.AddressRequest;
 import com.github.database.rider.core.api.configuration.DBUnit;
@@ -16,13 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest
 @DBRider
 @DBUnit(cacheConnection = false)
 class AddressRegisterUsecaseTest {
-    private static final String DB_URL = "jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false";
+    private static final String DB_URL =
+        "jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false";
     private static final String DB_USER = "utuser";
     private static final String DB_PASSWORD = "utpassword";
 
@@ -58,9 +59,11 @@ class AddressRegisterUsecaseTest {
     @DataSet(value = "datasets/address/addresses-setup.yml", cleanBefore = true)
     void 指定した住所情報を新規登録する() {
         // setup
-        AddressDto expected = new AddressDto(4, "1506001", "東京都", "渋谷区", "恵比寿恵比寿ガーデンプレイス（１階）");
+        AddressDto expected =
+            new AddressDto(4, "1506001", "東京都", "渋谷区", "恵比寿恵比寿ガーデンプレイス（１階）");
 
-        AddressRequest addressRequest = new AddressRequest("1506001", "東京都", "渋谷区", "恵比寿恵比寿ガーデンプレイス（１階）");
+        AddressRequest addressRequest =
+            new AddressRequest("1506001", "東京都", "渋谷区", "恵比寿恵比寿ガーデンプレイス（１階）");
 
         // execute
         AddressDto actual = sut.execute(addressRequest);

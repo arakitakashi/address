@@ -1,19 +1,19 @@
 package com.examination3.address.domain.address;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 class StreetAddressTest {
     @Test
     void _100桁以内の文字列を渡すと正常にインスタンスを生成する() {
-       // execute
-       StreetAddress actual = new StreetAddress("飯田橋");
+        // execute
+        StreetAddress actual = new StreetAddress("飯田橋");
 
-       // assert
+        // assert
         assertThat(actual.value()).isEqualTo("飯田橋");
     }
 

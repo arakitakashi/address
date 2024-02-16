@@ -102,7 +102,7 @@ public class AddressController {
      *
      * @param id             ID
      * @param addressRequest 更新する住所の情報
-     * @Return レスポンスエンティティ。
+     * @return レスポンスエンティティ。
      */
     @PatchMapping("/v1/addresses/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

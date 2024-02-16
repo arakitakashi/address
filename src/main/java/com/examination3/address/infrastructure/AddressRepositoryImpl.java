@@ -79,10 +79,10 @@ public class AddressRepositoryImpl implements AddressRepository {
         }
         return new Address(
             new Id(addressRecord.id()),
-            new ZipCode(addressRecord.zip_code()),
+            new ZipCode(addressRecord.zipCode()),
             new Prefecture(addressRecord.prefecture()),
             new City(addressRecord.city()),
-            new StreetAddress(addressRecord.street_address())
+            new StreetAddress(addressRecord.streetAddress())
         );
     }
 
@@ -92,7 +92,7 @@ public class AddressRepositoryImpl implements AddressRepository {
     public Address register(Address address) {
         String query = """
             INSERT INTO addresses (id, zip_code, prefecture, city, street_address) 
-            VALUES (:id, :zip_code, :prefecture, :city, :street_address)
+            VALUES (:id, :zipCode, :prefecture, :city, :streetAddress)
             """;
 
         Map<String, Object> params = createParams(address);
@@ -126,10 +126,10 @@ public class AddressRepositoryImpl implements AddressRepository {
         String query = """
             UPDATE addresses
             SET 
-            zip_code = :zip_code, 
+            zip_code = :zipCode, 
             prefecture = :prefecture, 
             city = :city, 
-            street_address = :street_address
+            street_address = :streetAddress
             WHERE id = :id
             """;
 
@@ -151,12 +151,13 @@ public class AddressRepositoryImpl implements AddressRepository {
     private Map<String, Object> createParams(Address address) {
         Map<String, Object> result = new HashMap<>();
         result.put("id", address.id().value());
-        result.put("zip_code", address.zipCode().value());
+        result.put("zipCode", address.zipCode().value());
         result.put("prefecture", address.prefecture().value());
         result.put("city", address.city().value());
-        result.put("street_address", address.streetAddress().value());
+        result.put("streetAddress", address.streetAddress().value());
         return result;
     }
+
     /**
      * {@inheritDoc}
      */

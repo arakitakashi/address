@@ -9,13 +9,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AddressApplication {
 
-	/**
-	 * アプリケーションのエントリーポイントです。
-	 *
-	 * @param args コマンドライン引数。
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(AddressApplication.class, args);
-	}
+    /**
+     * アプリケーションのエントリーポイントです。
+     *
+     * @param args コマンドライン引数。
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(AddressApplication.class, args);
+    }
 
 }

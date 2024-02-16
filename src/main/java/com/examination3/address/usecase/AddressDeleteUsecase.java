@@ -20,6 +20,8 @@ public class AddressDeleteUsecase {
      */
     public void execute(String id) {
         boolean isSuccess = addressRepository.delete(id);
-        if (!isSuccess) throw new AddressNotFoundException(id);
+        if (!isSuccess) {
+            throw new AddressNotFoundException(id);
+        }
     }
 }

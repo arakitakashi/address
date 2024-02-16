@@ -1,19 +1,21 @@
 package com.examination3.address.presentation.address;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 出力のための住所情報のレスポンスボティをマッピングするクラス。
  *
- * @param id             IDの値。
- * @param zip_code       zip codeの値。
- * @param prefecture     prefectureの値。
- * @param city           cityの値。
- * @param street_address street addressの値。
+ * @param id            IDの値。
+ * @param zipCode       zip codeの値。
+ * @param prefecture    prefectureの値。
+ * @param city          cityの値。
+ * @param streetAddress street addressの値。
  */
 public record AddressResponse(
     String id,
-    String zip_code,
+    @JsonProperty("zip_code") String zipCode,
     String prefecture,
     String city,
-    String street_address
+    @JsonProperty("street_address") String streetAddress
 ) {
 }

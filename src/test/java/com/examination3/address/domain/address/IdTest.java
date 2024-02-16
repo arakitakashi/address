@@ -1,8 +1,8 @@
 package com.examination3.address.domain.address;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class IdTest {
     @Test
@@ -11,6 +11,6 @@ class IdTest {
         Id actual = new Id(1);
 
         // assert
-       assertThat(actual.value()).isEqualTo(1);
+        assertThat(actual.value()).isEqualTo(1);
     }
 }

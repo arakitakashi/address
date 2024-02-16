@@ -1,11 +1,11 @@
 package com.examination3.address.domain.address;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PrefectureTest {
     @Test
@@ -24,7 +24,8 @@ class PrefectureTest {
         ' '                                  | prefecture must not be blank. | 値が空文字
                                              | prefecture must not be blank. | 値がnull 
         """)
-    void _20文字以内の文字列以外の値を渡した場合例外が発生する(String value, String message, String testName) {
+    void _20文字以内の文字列以外の値を渡した場合例外が発生する(String value, String message,
+        String testName) {
         // assert
         assertThatThrownBy(() -> new Prefecture(value))
             .isInstanceOf(IllegalArgumentException.class)

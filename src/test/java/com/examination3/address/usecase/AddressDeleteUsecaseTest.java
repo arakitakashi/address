@@ -1,5 +1,8 @@
 package com.examination3.address.usecase;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.examination3.address.domain.address.Address;
 import com.examination3.address.domain.address.AddressRepository;
 import com.examination3.address.domain.exception.AddressNotFoundException;
@@ -13,14 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 @SpringBootTest
 @DBRider
 @DBUnit(cacheConnection = false)
 class AddressDeleteUsecaseTest {
-    private static final String DB_URL = "jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false";
+    private static final String DB_URL =
+        "jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false";
     private static final String DB_USER = "utuser";
     private static final String DB_PASSWORD = "utpassword";
 

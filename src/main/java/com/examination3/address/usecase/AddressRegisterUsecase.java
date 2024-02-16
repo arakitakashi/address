@@ -30,10 +30,10 @@ public class AddressRegisterUsecase {
         Address registeredAddress = addressRepository.register(
             new Address(
                 new Id(id),
-                new ZipCode(addressRequest.zip_code()),
+                new ZipCode(addressRequest.zipCode()),
                 new Prefecture(addressRequest.prefecture()),
                 new City(addressRequest.city()),
-                new StreetAddress(addressRequest.street_address())
+                new StreetAddress(addressRequest.streetAddress())
             )
         );
 

@@ -15,13 +15,42 @@ public interface AddressRepository {
      */
     List<Address> findAll();
 
+    /**
+     * 指定されたIDの住所情報を取得します。
+     *
+     * @param id IDの値。
+     * @return 住所情報。
+     */
     Optional<Address> findById(String id);
 
+    /**
+     * 指定された住所情報を登録します。
+     *
+     * @param address 住所オブジェクト。
+     * @return 登録された住所情報。
+     */
     Address register(Address address);
 
+    /**
+     * 指定された住所情報を更新します。
+     *
+     * @param address 住所オブジェクト。
+     * @return 更新された住所情報。
+     */
     Optional<Address> update(Address address);
 
+    /**
+     * 指定されたIDの住所情報を削除します。
+     *
+     * @param id IDの値。
+     * @return 削除の成否を表すブーリアン。
+     */
     boolean delete(String id);
 
+    /**
+     * データベースから付番される次のIDの値を返します。
+     *
+     * @return 付番された新しいIDの値。
+     */
     int nextAddressId();
 }

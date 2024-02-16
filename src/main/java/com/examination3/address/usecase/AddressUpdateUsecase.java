@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * 指定されたIDの住所情報の更新を行うユースケースクラス。 リポジトリを利用して、操作を行います。
+ * 指定されたidの住所情報の更新を行うユースケースクラス。 リポジトリを利用して、操作を行います。
  */
 @Service
 @Slf4j
@@ -27,6 +27,7 @@ public class AddressUpdateUsecase {
     /**
      * 既存の住所情報を更新します。
      *
+     * @param id             IDの値。
      * @param addressRequest 更新する住所情報のリクエスト。
      */
     @SuppressWarnings("unused") // orElseThrow の戻り値に関する警告を抑制
@@ -43,7 +44,7 @@ public class AddressUpdateUsecase {
 
     private Address requestToAddress(Address existingAddress, AddressRequest addressRequest) {
         ZipCode updateZipCode =
-            !isBlank(addressRequest.zip_code()) ? new ZipCode(addressRequest.zip_code())
+            !isBlank(addressRequest.zipCode()) ? new ZipCode(addressRequest.zipCode())
                 : existingAddress.zipCode();
 
         Prefecture updatePrefecture =
@@ -55,8 +56,8 @@ public class AddressUpdateUsecase {
                 : existingAddress.city();
 
         StreetAddress updateStreetAddress =
-            !isBlank(addressRequest.street_address()) ? new StreetAddress(
-                addressRequest.street_address()) : existingAddress.streetAddress();
+            !isBlank(addressRequest.streetAddress()) ? new StreetAddress(
+                addressRequest.streetAddress()) : existingAddress.streetAddress();
 
         return new Address(
             existingAddress.id(),

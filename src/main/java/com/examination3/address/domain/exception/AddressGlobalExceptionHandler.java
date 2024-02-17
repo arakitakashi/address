@@ -1,9 +1,13 @@
 package com.examination3.address.domain.exception;
 
+import static com.examination3.address.domain.exception.ExceptionMessage.UNEXPECTED_ERROR_MESSAGE_FOR_LOG;
+import static com.examination3.address.domain.exception.ExceptionMessage.UNEXPECTED_ERROR_MESSAGE_FOR_RESPONSE;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 /**
  * 住所情報の例外をグローバルに処理するクラス。 アプリケーション全体で発生する特定の例外に対して、共通のレスポンス形式を提供します。
  */
+@Slf4j
 @ControllerAdvice
 public class AddressGlobalExceptionHandler {
     private static final String KEY_OF_CODE = "code";
@@ -69,6 +74,24 @@ public class AddressGlobalExceptionHandler {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put(KEY_OF_CODE, "0001");
         body.put(KEY_OF_MESSAGE, "A data access error occurred.");
+
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 予期しない例外を捕捉する汎用のエラーハンドラ
+     *
+     * @param e 発生した例外
+     * @return エラー情報を含むレスポンスエンティティ
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUnexpectedExceptions(Exception e) {
+        log.error(UNEXPECTED_ERROR_MESSAGE_FOR_LOG.getMessage());
+        log.debug("Detail: " + e.getMessage());
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put(KEY_OF_CODE, "9999");
+        body.put(KEY_OF_MESSAGE, UNEXPECTED_ERROR_MESSAGE_FOR_RESPONSE.getMessage());
 
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -5,6 +5,22 @@ package com.examination3.address.domain.exception;
  */
 public enum ExceptionMessage {
     /**
+     * 予期しないエラーが発生した場合にクライアントに返すレスポンスに使用します。
+     */
+    UNEXPECTED_ERROR_MESSAGE_FOR_RESPONSE("a system error has occurred."),
+    /**
+     * 予期しないエラーが発生した場合のログ出力に使用します。
+     */
+    UNEXPECTED_ERROR_MESSAGE_FOR_LOG("an unexpected error has occurred."),
+    /**
+     * DataAccessException発生時のログ出力に使用します。
+     */
+    DATA_ACCESS_EXCEPTION_MESSAGE("Database Access Error"),
+    /**
+     * AddressRepositoryで発番されたID番号が取得できなかった場合に使用します。
+     */
+    FAIL_GET_NEXT_ID_NUMBER_MESSAGE("Failed to fetch next address ID from sequence."),
+    /**
      * IDに対応するaddressが見つからない場合に使用します。
      */
     ADDRESS_NOT_FOUND_MESSAGE("specified address [id = %s] is not found."),

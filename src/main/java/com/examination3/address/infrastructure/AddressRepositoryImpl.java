@@ -1,5 +1,7 @@
 package com.examination3.address.infrastructure;
 
+import static com.examination3.address.domain.exception.ExceptionMessage.DATA_ACCESS_EXCEPTION_MESSAGE;
+import static com.examination3.address.domain.exception.ExceptionMessage.FAIL_GET_NEXT_ID_NUMBER_MESSAGE;
 import static java.util.Objects.isNull;
 
 import com.examination3.address.domain.address.Address;
@@ -29,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Repository
 public class AddressRepositoryImpl implements AddressRepository {
-    private static final String DATABASE_ACCESS_ERROR_MESSAGE = "Database Access Error";
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     /**
@@ -44,7 +45,7 @@ public class AddressRepositoryImpl implements AddressRepository {
                 new DataClassRowMapper<>(AddressRecord.class));
             return addressRecord.stream().map(this::mapToAddress).toList();
         } catch (DataAccessException e) {
-            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            log.error(DATA_ACCESS_EXCEPTION_MESSAGE.getMessage(), e);
             throw e;
         }
     }
@@ -68,7 +69,7 @@ public class AddressRepositoryImpl implements AddressRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         } catch (DataAccessException e) {
-            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            log.error(DATA_ACCESS_EXCEPTION_MESSAGE.getMessage(), e);
             throw e;
         }
     }
@@ -101,7 +102,7 @@ public class AddressRepositoryImpl implements AddressRepository {
             jdbcTemplate.update(query, params);
             return address;
         } catch (DataAccessException e) {
-            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            log.error(DATA_ACCESS_EXCEPTION_MESSAGE.getMessage(), e);
             throw e;
         }
     }
@@ -112,9 +113,15 @@ public class AddressRepositoryImpl implements AddressRepository {
     public int nextAddressId() {
         String sql = "SELECT NEXTVAL('ADDRESS_ID_SEQ')";
 
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class))
-            .orElseThrow(
-                () -> new IllegalStateException("Failed to fetch next address ID from sequence."));
+        try {
+            return Optional.ofNullable(
+                jdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class)
+            ).orElseThrow(() ->
+                new IllegalStateException(FAIL_GET_NEXT_ID_NUMBER_MESSAGE.getMessage()));
+        } catch (DataAccessException e) {
+            log.error(DATA_ACCESS_EXCEPTION_MESSAGE.getMessage(), e);
+            throw e;
+        }
     }
 
     /**
@@ -143,7 +150,7 @@ public class AddressRepositoryImpl implements AddressRepository {
             }
             return Optional.of(address);
         } catch (DataAccessException e) {
-            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            log.error(DATA_ACCESS_EXCEPTION_MESSAGE.getMessage(), e);
             throw e;
         }
     }
@@ -173,7 +180,7 @@ public class AddressRepositoryImpl implements AddressRepository {
 
             return affectedRows > 0;
         } catch (DataAccessException e) {
-            log.error(DATABASE_ACCESS_ERROR_MESSAGE, e);
+            log.error(DATA_ACCESS_EXCEPTION_MESSAGE.getMessage(), e);
             throw e;
         }
     }

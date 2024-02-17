@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * 指定されたidの住所情報の更新を行うユースケースクラス。 リポジトリを利用して、操作を行います。
+ * 指定されたIDの住所情報の更新を行うユースケースクラス。 リポジトリを利用して、操作を行います。
  */
 @Service
 @Slf4j

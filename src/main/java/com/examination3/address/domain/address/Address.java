@@ -20,13 +20,13 @@ public record Address(
     StreetAddress streetAddress
 ) {
     /**
-     * 住所エンティティのコンストラクタ。　住所の基本情報であるID、ZIP CODE、Prefecture、City、Street Addressを保持します。
+     * 住所エンティティのコンストラクタ。　住所の基本情報であるID、zip code、prefecture、city、street addressを保持します。
      *
      * @param id            IDの値オブジェクト。　nullであってはいけません。
-     * @param zipCode       Zip Codeの値オブジェクト。 nullであってはいけません。
-     * @param prefecture    Prefectureの値オブジェクト。　nullであってはいけません。
-     * @param city          Cityの値オブジェクト。　nullであってはいけません。
-     * @param streetAddress Street Addressの値オブジェクト。　nullであってはいけません。
+     * @param zipCode       zip Codeの値オブジェクト。 nullであってはいけません。
+     * @param prefecture    prefectureの値オブジェクト。　nullであってはいけません。
+     * @param city          cityの値オブジェクト。　nullであってはいけません。
+     * @param streetAddress street addressの値オブジェクト。　nullであってはいけません。
      */
     public Address {
         if (isNull(id)) {

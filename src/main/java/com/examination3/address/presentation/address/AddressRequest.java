@@ -1,5 +1,7 @@
 package com.examination3.address.presentation.address;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 入力された住所情報のリクエストボティをマッピングするクラス。
  *
@@ -9,9 +11,9 @@ package com.examination3.address.presentation.address;
  * @param streetAddress street addressの値。
  */
 public record AddressRequest(
-    String zipCode,
-    String prefecture,
-    String city,
-    String streetAddress
+    @JsonProperty("zip_code") String zipCode,
+    @JsonProperty("prefecture") String prefecture,
+    @JsonProperty("city") String city,
+    @JsonProperty("street_address") String streetAddress
 ) {
 }

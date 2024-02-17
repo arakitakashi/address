@@ -12,10 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param streetAddress street addressの値。
  */
 public record AddressResponse(
-    String id,
+    @JsonProperty("id") String id,
     @JsonProperty("zip_code") String zipCode,
-    String prefecture,
-    String city,
+    @JsonProperty("prefecture") String prefecture,
+    @JsonProperty("city") String city,
     @JsonProperty("street_address") String streetAddress
 ) {
 }

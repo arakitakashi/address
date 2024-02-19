@@ -79,7 +79,7 @@ public class AddressGlobalExceptionHandler {
     }
 
     /**
-     * 予期しない例外を捕捉する汎用のエラーハンドラ
+     * 予期しない例外を捕捉する汎用のエラーハンドラです。クライアントにはInternalServerErrorと共にエラー情報を返します。
      *
      * @param e 発生した例外
      * @return エラー情報を含むレスポンスエンティティ
